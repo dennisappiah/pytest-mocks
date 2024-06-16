@@ -35,3 +35,28 @@ def test_list():
 @pytest.mark.parametrize("a, b, final", [(2, 4, 6), (3, 5, 8)])
 def test_add(a, b, final):
     assert a + b == final
+
+
+def f():
+    raise SystemExit(1)
+
+
+def test_exception():
+    with pytest.raises(SystemExit):
+        f()
+
+
+def fi():
+    raise ExceptionGroup(
+        "Group message",
+        [
+            RuntimeError(),
+        ],
+    )
+
+
+def test_exception_in_group():
+    with pytest.raises(ExceptionGroup) as excinfo:
+        fi()
+    assert excinfo.group_contains(RuntimeError)
+    assert not excinfo.group_contains(TypeError)
